@@ -7,9 +7,11 @@ All the raw datasets except the QM9 (which is very large) are lied in 'FFiNet/da
 
 ## How to run
 - train LineEvo on datasets (delaney, freesolv, lipo, bace, bbbp)
+
 ```python train_main.py -desc [desc] -model [model] -dataset [dataset]```
 
 - hyper-parameters search for each dataset
+
 ```python hyper_search.py -desc [desc] -model [model]```
 
 - train LineEvo on QM9 dataset (to be added)
