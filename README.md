@@ -3,7 +3,7 @@ This is the official implentation of LineEvo: "Enhancing molecular representatio
 ![LineEvo Structure](./results/TOC.jpg)
 
 ## Datasets
-All the raw datasets except the QM9 (which is very large) are lied in 'FFiNet/data/raw_files/'. The QM9 dataset can be download [here](https://deepchemdata.s3-us-west-1.amazonaws.com/datasets/molnet_publish/qm9.zip).
+All the raw datasets except the QM9 (which is very large) are lied in 'dataset/raw_files/'. The QM9 dataset can be download [here](https://deepchemdata.s3-us-west-1.amazonaws.com/datasets/molnet_publish/qm9.zip).
 
 ## How to run
 - train LineEvo on datasets (delaney, freesolv, lipo, bace, bbbp)
