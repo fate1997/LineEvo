@@ -1,0 +1,31 @@
+desc: 'test'
+
+train:
+  num_epochs: 10000
+  lr: 0.002
+  patience: 500
+  save_folder: './results/'
+  task: 'binary'
+  metric: 'RMSE'
+  device: 'cuda:0'
+  log_interval: 10
+
+model:
+  input_dim: 63
+  hidden_dim: 128
+  output_dim: 1
+  num_heads: 8
+  num_layers: 3
+  dropout: 0.2
+  readout:
+    name: 'Add'
+    dropout: 0.1
+    num_layers: 1
+    if_pos: True
+
+data:
+  data_name: 'bbbp'
+  scaffold: False
+  seed: 42
+  batch_size: 128
+  train_ratio: 0.8
