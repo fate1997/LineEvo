@@ -18,4 +18,17 @@ All the raw datasets except the QM9 (which is very large) are lied in 'dataset/r
 
 ## Cite
 If you use FFiNet in your research, please cite:
-```@article{...}```
+```@Article{Ren2023,
+author={Ren, Gao-Peng
+and Wu, Ke-Jun
+and He, Yuchen},
+title={Enhancing Molecular Representations Via Graph Transformation Layers},
+journal={Journal of Chemical Information and Modeling},
+year={2023},
+month={Apr},
+day={27},
+publisher={American Chemical Society},
+issn={1549-9596},
+doi={10.1021/acs.jcim.3c00059},
+url={https://doi.org/10.1021/acs.jcim.3c00059}
+}```
