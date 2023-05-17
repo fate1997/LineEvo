@@ -54,7 +54,7 @@ class GIN(nn.Module):
         readout_name = readout_config.name
 
         if readout_name == 'LineEvo':
-            return LineEvo(self.hidden_dim, readout_config.dropout, readout_config.num_layers, readout_config.if_pos)
+            return LineEvo(self.hidden_dim, self.hidden_dim, readout_config.dropout, readout_config.num_layers, readout_config.if_pos)
         elif readout_name == 'Add':
             return ReadoutPhase(self.hidden_dim)
         else:
