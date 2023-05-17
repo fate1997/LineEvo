@@ -31,7 +31,7 @@ class LineEvo(nn.Module):
             x, pos, batch, mol_repr = layer(x, edges, pos, batch)
             mol_repr_all = mol_repr_all + mol_repr
         
-        return mol_repr_all # 在算SchNet的时候这个好像是mol_repr
+        return mol_repr_all
 
 
 class LineEvoLayer(nn.Module):
