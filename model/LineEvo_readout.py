@@ -14,40 +14,43 @@ from .modules import RBFExpansion, ReadoutPhase
 
 
 class LineEvo(nn.Module):
-    def __init__(self, dim=128, dropout=0, num_layers=1, if_pos=False):
+    def __init__(self, in_dim=63, dim=128, dropout=0, num_layers=1, if_pos=True):
         super().__init__()
+        self.dim = dim
         self.layers = nn.ModuleList()
-        for _ in range(num_layers):
-            self.layers.append(LineEvoLayer(dim, dropout, if_pos))
+        for i in range(num_layers):
+            self.layers.append(LineEvoLayer(in_dim if i==0 else dim, dim, dropout, if_pos))
         
     
-    def forward(self, x, edge_index, edge_attr, pos, batch):
-        edges = torch.as_tensor(np.array(nx.from_edgelist(edge_index.T.tolist()).edges)).to(x.device)
+    def forward(self, data):
+        x, pos, batch = data.x, data.pos, data.batch
 
         mol_repr_all = 0
-        for layer in self.layers:
-            x, edges, edge_attr, pos, batch, mol_repr = layer(x, edges, edge_attr, pos, batch)
+        for i, layer in enumerate(self.layers):
+            edges = getattr(data, f'edges_{i}')
+            x, pos, batch, mol_repr = layer(x, edges, pos, batch)
             mol_repr_all = mol_repr_all + mol_repr
         
-        return mol_repr_all
+        return mol_repr_all # 在算SchNet的时候这个好像是mol_repr
 
 
 class LineEvoLayer(nn.Module):
-    def __init__(self, dim=128, dropout=0.1, if_pos=False):
+    def __init__(self, in_dim=128, dim=128, dropout=0.1, if_pos=False):
         super().__init__()
         self.dim = dim
         self.if_pos = if_pos
 
         # feature evolution
-        self.linear = nn.Linear(dim, dim)
+        self.linear = nn.Linear(in_dim, dim)
         # self.bias = nn.Parameter(torch.Tensor(dim))
         self.act = nn.ELU()
         self.dropout = nn.Dropout(dropout)
         self.attn = nn.Parameter(torch.randn(1, dim))
 
         if self.if_pos:
-            self.rbf_expand = RBFExpansion(0, 5, 6)
-            self.linear_rbf = nn.Linear(6, dim, bias=False)
+            num_gaussians = 6
+            self.rbf_expand = RBFExpansion(0, 5, num_gaussians)
+            self.linear_rbf = nn.Linear(num_gaussians, dim, bias=False)
 
         self.init_params()
         # readout phase
@@ -62,13 +65,8 @@ class LineEvoLayer(nn.Module):
             nn.init.xavier_uniform_(self.linear_rbf.weight)        
 
 
-    def forward(self, x, edges, edge_attr, pos, batch):
+    def forward(self, x, edges, pos, batch):
         
-        # create edges for isolated nodes
-        num_nodes = x.shape[0]
-        isolated_nodes = set(range(num_nodes)).difference(set(edges.flatten().tolist()))
-        edges = torch.cat([edges, torch.LongTensor([[i, i] for i in isolated_nodes]).to(edges.device)], dim=0).to(torch.long)
-
         # feature evolution
         x = self.dropout(x)
         x_src = self.linear(x).index_select(0, edges[:, 0])
@@ -92,23 +90,8 @@ class LineEvoLayer(nn.Module):
 
         # update batch and edges
         batch = batch.index_select(0, edges[:, 0])
-        edges = self.edge_evolve(edges.to(x.device))
         
         # final readout
         mol_repr = self.readout(atom_repr, batch)
         
-        return atom_repr, edges, edge_attr, pos, batch, mol_repr
-    
-
-    def edge_evolve(self, edges):
-        l = edges[:, 0].tolist()+ edges[:, 1].tolist()
-        tally = defaultdict(list)
-        for i, item in enumerate(l):
-            tally[item].append(i if i < len(l)//2 else i - len(l)//2)
-        
-        output = []
-        for _, locs in tally.items():
-            if len(locs) > 1:
-                output.append(list(combinations(locs, 2)))
-        
-        return torch.tensor(list(chain(*output))).to(edges.device)
+        return atom_repr, pos, batch, mol_repr
