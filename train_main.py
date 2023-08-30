@@ -144,6 +144,17 @@ if __name__ == '__main__':
     parser.add_argument('-config_name', default='train.yml')
     args = parser.parse_args()
 
+    # create folders to save results if it not exists
+    log_path = './results/logs'
+    if not os.path.exists(log_path):
+        os.makedirs(log_path, exist_ok=True)
+    ckpt_path = './results/checkpoints'
+    if not os.path.exists(ckpt_path):
+        os.makedirs(ckpt_path, exist_ok=True)
+    processed_path = './dataset/processed_files'
+    if not os.path.exists(processed_path):
+        os.makedirs(processed_path, exist_ok=True)
+    
     # dataset-task
     dataset_task = {
         'freesolv': 'regression',
