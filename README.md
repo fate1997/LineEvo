@@ -9,6 +9,9 @@ All the raw datasets except the QM9 (which is very large) are lied in 'dataset/r
 - train LineEvo on datasets (delaney, freesolv, lipo, bace, bbbp)
 
 ```python train_main.py -desc [desc] -model [model] -dataset [dataset]```
+  - `desc`: Description for the saving results' names
+  - `model`: `Add` or `LineEvo` (the former means normal GNN models, the latter is the model this paper proposed)
+  - `dataset`: file name in the `dataset/raw_files` e.g. `freesolv`
 
 - hyper-parameters search for each dataset
 
