@@ -52,7 +52,8 @@ class GATv2(nn.Module):
             mol_repr_all += mol_repr
 
         if self.readout.name == 'LineEvo':
-            mol_repr = self.readout_func(x, edge_index, edge_attr, pos, batch)
+            data.x = x
+            mol_repr = self.readout_func(data)
             mol_repr_all += mol_repr
 
         return self.predict(mol_repr_all) # mol_repr_all
