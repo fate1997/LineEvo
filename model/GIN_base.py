@@ -44,7 +44,8 @@ class GIN(nn.Module):
         mol_repr_all = self.gin_readout(x, batch)
         
         if self.readout.name == 'LineEvo':
-            mol_repr = self.readout_func(x, edge_index, edge_attr, pos, batch)
+            data.x = data
+            mol_repr = self.readout_func(data)
             mol_repr_all += mol_repr
 
         return self.predict(mol_repr_all) # mol_repr
