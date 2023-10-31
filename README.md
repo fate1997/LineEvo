@@ -23,7 +23,7 @@ All the raw datasets except the QM9 (which is very large) are lied in 'dataset/r
 - train LineEvo on QM9 dataset (to be added)
 
 ## Cite
-If you use FFiNet in your research, please cite:
+If you use LineEvo in your research, please cite:
   ```@Article{Ren2023,
   author={Ren, Gao-Peng
   and Wu, Ke-Jun
